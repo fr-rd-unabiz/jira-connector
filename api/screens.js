@@ -220,7 +220,7 @@ function ScreensClient(jiraClient) {
     this.buildRequestOptions = function (opts, path, method, body, qs) {
         var basePath = '/screens/' + opts.screenId;
         if (!qs) qs = {};
-        if (!body && method !== "GET") body = {};
+        if (!body) body = {};
 
         if (opts.fields) {
             qs.fields = '';
@@ -238,7 +238,7 @@ function ScreensClient(jiraClient) {
             qs.expand = qs.expand.slice(0, -1);
         }
 
-        return {
+        var options = {
             uri: this.jiraClient.buildURL(basePath + path),
             method: method,
             body: body,
@@ -246,5 +246,9 @@ function ScreensClient(jiraClient) {
             followAllRedirects: true,
             json: true
         };
+        if (method === 'GET') {
+            delete options.body;
+        }
+        return options;
     };
 }
